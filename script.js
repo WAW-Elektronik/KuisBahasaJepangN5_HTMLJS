@@ -2,7 +2,23 @@ let currentQuestions = [];
 let currentFileName = ""; // untuk menyimpan nama file soal saat ini
 
 // Saat user memilih soal dari dropdown
+document.getElementById("GrammardanPartikelN5-select").addEventListener("change", function () {
+  const fileName = this.value;
+  loadQuestions(fileName);
+});
+document.getElementById("KataHubungN5-select").addEventListener("change", function () {
+  const fileName = this.value;
+  loadQuestions(fileName);
+});
 document.getElementById("KataKerjaN5-select").addEventListener("change", function () {
+  const fileName = this.value;
+  loadQuestions(fileName);
+});
+document.getElementById("KataSifatN5-select").addEventListener("change", function () {
+  const fileName = this.value;
+  loadQuestions(fileName);
+});
+document.getElementById("KataBendaN5-select").addEventListener("change", function () {
   const fileName = this.value;
   loadQuestions(fileName);
 });
@@ -18,7 +34,11 @@ function loadQuestions(fileName) {
     delete window.questions;
   }
 
+  document.getElementById("GrammardanPartikelN5-select").style.display = "none";
+  document.getElementById("KataHubungN5-select").style.display = "none";
   document.getElementById("KataKerjaN5-select").style.display = "none";
+  document.getElementById("KataSifatN5-select").style.display = "none";
+  document.getElementById("KataBendaN5-select").style.display = "none";
   document.getElementById("quiz-container").innerHTML = "";
 
   const script = document.createElement("script");
@@ -96,7 +116,11 @@ function checkAnswers() {
 
 // Kembali ke menu awal
 function goBack() {
+  document.getElementById("GrammardanPartikelN5-select").style.display = "block";
+  document.getElementById("KataHubungN5-select").style.display = "block";
   document.getElementById("KataKerjaN5-select").style.display = "block";
+  document.getElementById("KataSifatN5-select").style.display = "block";
+  document.getElementById("KataBendaN5-select").style.display = "block";
   document.getElementById("quiz-container").innerHTML = "";
   document.querySelector("button[onclick='goBack()']").style.display = "none";
   document.getElementById("reload-button").style.display = "none";
