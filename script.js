@@ -1,5 +1,6 @@
 let currentQuestions = [];
-let currentFileName = ""; // untuk menyimpan nama file soal saat ini
+let currentFileName = "";
+let displayedQuestions = [];
 
 // Saat user memilih soal dari dropdown
 document.getElementById("GrammardanPartikelN5-select").addEventListener("change", function () {
@@ -27,7 +28,6 @@ document.getElementById("KataBendaN5-select").addEventListener("change", functio
 function loadQuestions(fileName) {
   currentFileName = fileName;
 
-  // Hapus script sebelumnya jika ada
   const existingScript = document.getElementById("dynamic-question-script");
   if (existingScript) {
     existingScript.remove();
@@ -52,21 +52,35 @@ function loadQuestions(fileName) {
 
     currentQuestions = JSON.parse(JSON.stringify(window.questions));
     shuffle(currentQuestions);
-    renderQuestions();
+    document.getElementById("range-selector").style.display = "block";
   };
   document.body.appendChild(script);
 }
 
-// Render semua soal ke halaman
-function renderQuestions() {
+// Tampilkan soal dengan rentang tertentu
+function renderQuestionsWithRange() {
+  const start = parseInt(document.getElementById("start-index").value) - 1;
+  const end = parseInt(document.getElementById("end-index").value);
+
+  if (isNaN(start) || isNaN(end) || start < 0 || end > currentQuestions.length || start >= end) {
+    alert("Rentang soal tidak valid!");
+    return;
+  }
+
+  displayedQuestions = currentQuestions.slice(start, end);
+  renderQuestions(displayedQuestions, start);
+}
+
+// Render soal ke halaman
+function renderQuestions(questionsToRender, startIndex = 0) {
   document.getElementById("quiz-container").innerHTML = "";
   document.getElementById("reload-button").style.display = "inline-block";
   document.querySelector("button[onclick='goBack()']").style.display = "inline-block";
 
-  currentQuestions.forEach((q, idx) => {
+  questionsToRender.forEach((q, idx) => {
     const div = document.createElement("div");
     div.className = "question";
-    div.innerHTML = `<h2>${idx + 1}. ${q.pertanyaan}</h2>`;
+    div.innerHTML = `<h2>${startIndex + idx + 1}. ${q.pertanyaan}</h2>`;
 
     const opsiTeracak = q.opsi.map((label, i) => ({ label, originalIndex: i }));
     shuffle(opsiTeracak);
@@ -75,7 +89,7 @@ function renderQuestions() {
     opsiTeracak.forEach((opt, i) => {
       div.innerHTML += `
         <label>
-          <input type="radio" name="q${idx}" value="${i}">
+          <input type="radio" name="q${startIndex + idx}" value="${i}">
           ${opt.label}
         </label><br>
       `;
@@ -85,26 +99,30 @@ function renderQuestions() {
   });
 }
 
-// Periksa semua jawaban
+// Periksa jawaban dan tampilkan skor
 function checkAnswers() {
-  currentQuestions.forEach((q, idx) => {
-    const radios = document.getElementsByName(`q${idx}`);
+  let correctCount = 0;
+  const questionElements = document.querySelectorAll('.question');
+
+  questionElements.forEach((container, idx) => {
+    const q = displayedQuestions[idx];
+    const radios = container.querySelectorAll(`input[type="radio"]`);
     const result = document.createElement("p");
 
     let selected = -1;
-    radios.forEach((r, i) => {
+    radios.forEach((r) => {
       if (r.checked) selected = parseInt(r.value);
     });
 
     if (selected === q.shuffledJawabanIndex) {
       result.textContent = "✓ Benar!";
       result.className = "correct";
+      correctCount++;
     } else {
       result.textContent = `✗ Salah. Jawaban benar: ${q.opsi[q.jawaban_index]}`;
       result.className = "wrong";
     }
 
-    const container = document.querySelector(`#quiz-container .question:nth-child(${idx + 1})`);
     const existing = container.querySelector("p");
     if (existing) {
       existing.replaceWith(result);
@@ -112,6 +130,9 @@ function checkAnswers() {
       container.appendChild(result);
     }
   });
+
+  const scorePercent = Math.round((correctCount / questionElements.length) * 100);
+  alert(`Skor kamu: ${correctCount}/${questionElements.length} (${scorePercent}%)`);
 }
 
 // Kembali ke menu awal
@@ -124,8 +145,10 @@ function goBack() {
   document.getElementById("quiz-container").innerHTML = "";
   document.querySelector("button[onclick='goBack()']").style.display = "none";
   document.getElementById("reload-button").style.display = "none";
+  document.getElementById("range-selector").style.display = "none";
   currentQuestions = [];
   currentFileName = "";
+  displayedQuestions = [];
 }
 
 // Memuat ulang soal yang sedang aktif
@@ -135,7 +158,7 @@ function reloadCurrentQuestions() {
   }
 }
 
-// Fungsi acak array (digunakan untuk mengacak soal dan jawaban)
+// Fungsi acak array
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
