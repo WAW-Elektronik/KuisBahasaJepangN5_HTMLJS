@@ -26,23 +26,32 @@
       margin-top: 10px;
       margin-right: 5px;
     }
+    select {
+      margin: 5px 0;
+      display: block;
+    }
+    #range-selector {
+      margin: 20px 0;
+    }
+    #range-selector label {
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
 
   <h1>Kuis Bahasa Jepang - Pilih Soal</h1>
 
+  <!-- Pilihan soal -->
   <select id="GrammardanPartikelN5-select">
     <option disabled selected>Pilih Soal Grammar dan Partikel</option>
     <option value="Grammar1N5">Grammar 1 N5</option>
-    <option value="PenggunaanPartikelN5">Pengunaan Partikel N5</option>
-    <!-- Tambahkan bab lainnya sesuai kebutuhan -->
+    <option value="PenggunaanPartikelN5">Penggunaan Partikel N5</option>
   </select>
 
   <select id="KataHubungN5-select">
     <option disabled selected>Pilih Soal Kata Hubung</option>
     <option value="KataHubung">Kata Hubung</option>
-    <!-- Tambahkan bab lainnya sesuai kebutuhan -->
   </select>
 
   <select id="KataKerjaN5-select">
@@ -50,30 +59,37 @@
     <option value="KataKerjaN5Arti">Kata Kerja N5 Arti</option>
     <option value="KataKerjaN5Kanji">Kata Kerja N5 Kanji</option>
     <option value="KataKerjaN5Te">Kata Kerja N5 Te</option>
-    <!-- Tambahkan bab lainnya sesuai kebutuhan -->
   </select>
 
   <select id="KataSifatN5-select">
     <option disabled selected>Pilih Soal Kata Sifat</option>
     <option value="KataSifatIN5">Kata Sifat I N5</option>
     <option value="KataSifatNaN5">Kata Sifat Na N5</option>
-    <!-- Tambahkan bab lainnya sesuai kebutuhan -->
   </select>
 
   <select id="KataBendaN5-select">
     <option disabled selected>Pilih Soal Kata Benda</option>
-    <option value="KataBendaRandomN5Arti">Kata Benda Random N5 Arti </option>
-    <option value="KataBendaFamily">Kata Benda Family </option>
-    <!-- Tambahkan bab lainnya sesuai kebutuhan -->
+    <option value="KataBendaRandomN5Arti">Kata Benda Random N5 Arti</option>
+    <option value="KataBendaFamily">Kata Benda Family</option>
   </select>
 
+  <!-- Pilihan rentang soal -->
+  <div id="range-selector" style="display: none;">
+    <label>Dari soal ke: <input type="number" id="start-index" min="1" value="1" style="width: 60px;"></label>
+    <label>Sampai soal ke: <input type="number" id="end-index" min="1" value="5" style="width: 60px;"></label>
+    <button onclick="renderQuestionsWithRange()">Tampilkan Soal</button>
+  </div>
+
+  <!-- Container soal -->
   <div id="quiz-container"></div>
 
+  <!-- Tombol kontrol -->
   <button onclick="checkAnswers()">Periksa Jawaban</button>
   <button onclick="reloadCurrentQuestions()" style="display:none;" id="reload-button">Muat Ulang Soal</button>
   <button onclick="goBack()" style="display:none;">Kembali ke Pilihan Soal</button>
 
   <!-- Skrip utama -->
   <script src="script.js"></script>
+
 </body>
 </html>
